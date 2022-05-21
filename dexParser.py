@@ -436,6 +436,41 @@ class DexFile(object):
 
             self.DexMethodIdList.append(dexMethodIdObj)
 
+    def print_dexmethod(self, method):
+        print "classid " + str(hex(method.classIdx)) + " " + self.getDexTypeId(method.classIdx)
+        print "nameid " + str(hex(method.nameIdx)) + " " +  self.DexStringIdList[method.nameIdx]
+        print "protoid " + str(hex(method.protoIdx)) + " " +  self.DexProtoIdList[method.protoIdx].toString(self)
+
+
+    def valid_dexMethodId(self):
+        preMethod = None 
+        for method in self.DexMethodIdList:
+            if preMethod == None:
+                preMethod = method
+                continue
+            if (preMethod.classIdx) > (method.classIdx):
+                print "method class idx order error "
+                self.print_dexmethod(preMethod)
+                print "--"
+                self.print_dexmethod(method)
+                # return False
+            elif (preMethod.classIdx) == (method.classIdx):
+                if (preMethod.nameIdx) > (method.nameIdx):
+                    print "method name idx order error"
+                    self.print_dexmethod(preMethod)
+                    print "--"
+                    self.print_dexmethod(method)
+                    # return False
+                elif (preMethod.nameIdx) == (method.nameIdx):
+                    if (preMethod.protoIdx) >= (method.protoIdx):
+                        print "method proto idx order error"
+                        self.print_dexmethod(preMethod)
+                        print "--"
+                        self.print_dexmethod(method)
+                    # return False
+            preMethod = method
+
+
     def print_DexMethodId(self):
         print '\n'
         print '[+] DexMethodId:'
@@ -1055,14 +1090,15 @@ class DexCode(object):
 
 def main():
     dex = DexFile(sys.argv[1])
-    dex.print_header()
-    dex.print_DexMapList()
-    dex.print_DexStringId()
-    dex.print_DexTypeId()
-    dex.print_DexProtoId()
-    dex.print_DexFieldId()
-    dex.print_DexMethodId()
-    dex.print_DexClassDef()
+    # dex.print_header()
+    # dex.print_DexMapList()
+    # dex.print_DexStringId()
+    # dex.print_DexTypeId()
+    # dex.print_DexProtoId()
+    # dex.print_DexFieldId()
+    # dex.print_DexMethodId()
+    # dex.print_DexClassDef()
+    dex.valid_dexMethodId()
 
 if __name__ == '__main__':
     main()
